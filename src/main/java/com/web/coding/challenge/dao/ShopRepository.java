@@ -16,4 +16,7 @@ public interface ShopRepository extends MongoRepository<Shop,String>{
 	List<Shop> findNearByShops(Point a, String idUser, Date date);
 	
 	List<Shop> findByLikedByUserIds(String idUser);
+	
+	@Query("{dislikedByUserIds:{$elemMatch: {dislikedAt : {$lt : ?1}, id: ?0} } }")
+	List<Shop> findExpiredDislikedShopByUserIds(String idUser, Date date);
 }

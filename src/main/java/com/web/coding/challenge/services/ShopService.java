@@ -1,11 +1,13 @@
 package com.web.coding.challenge.services;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Point;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.web.coding.challenge.dao.ShopRepository;
@@ -66,4 +68,24 @@ public class ShopService implements IShopService {
 	public List<Shop> getLikedShopsByUserId(String idUser) {
 		return shopRepository.findByLikedByUserIds(idUser);
 	}
+	
+	/*
+	 * this method get ride of expired dislikes
+	 */
+	
+	@Async
+	public void removeDislikes(String idUser) {
+		DateTime dateTime = new DateTime().minusHours(2);
+		List<Shop> shops=shopRepository.findExpiredDislikedShopByUserIds(idUser, dateTime.toDate());
+	 	for (Shop item : shops) {
+	 		Iterator<UserDislike> iterator = item.getDislikedByUserIds().iterator();
+		 		while(iterator.hasNext()){
+		 		    UserDislike currentDislike = iterator.next();
+		 		   if(currentDislike.getId().equals(idUser)){
+		 		        iterator.remove();
+		 		    }
+		 		}
+		 }
+	}
+	
 }
