@@ -12,7 +12,7 @@ import com.web.coding.challenge.models.Shop;
 
 public interface ShopRepository extends MongoRepository<Shop,String>{
 	
-	@Query("{location:{$nearSphere :?0},'prefferedByUserIds' : {$ne : ?1},dislikedByUserIds:{$not:{$elemMatch:{dislikedAt : {$gt : ?2}, id: ?1}}}}")
+	@Query("{location:{$nearSphere :?0},'likedByUserIds' : {$ne : ?1},dislikedByUserIds:{$not:{$elemMatch:{dislikedAt : {$gt : ?2}, id: ?1}}}}")
 	List<Shop> findNearByShops(Point a, String idUser, Date date);
 	
 	List<Shop> findByLikedByUserIds(String idUser);
